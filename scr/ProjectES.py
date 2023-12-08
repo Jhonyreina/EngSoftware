@@ -131,7 +131,7 @@ botao_salvar.place(x=5,y=140)
 resultado = Text(janela, height=30, width=100)
 resultado.place(x=150, y = 20)
 
-botao_cria_receita = tk.Button(janela, text="Adicionar a receita",height = 1, width = 18, command=criar_receita)
+botao_cria_receita = tk.Button(janela, text="Criar/Adicionar a receita",height = 1, width = 18, command=criar_receita)
 botao_cria_receita.place(x=5,y=410)
 
 botao_reiniciar_receita = tk.Button(janela, text="Reiniciar receita",height = 1, width = 18, command=reiniciar_receita)

@@ -1,7 +1,6 @@
 import csv
 import Estoque
 
-
 def ingrediente_existe(nome_ingrediente, lista_ingredientes):
     for ingrediente in lista_ingredientes:
         if ingrediente.nome.lower() == nome_ingrediente.lower():
