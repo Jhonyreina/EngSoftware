@@ -16,7 +16,7 @@ class Ingredientes:
 
     @classmethod
     def from_csv(cls, dados):
-        return cls(dados[0], int(dados[1]))
+        return cls(dados[0], float(dados[1]))
 
 def ingrediente_existe(nome_ingrediente):
     for ingrediente in lista_ingredientes:
@@ -31,10 +31,11 @@ def adicionar_ingrediente():
     if nome_ingrediente and quantidade_ingrediente:
         # Verifica se o ingrediente já está na lista
         if not ingrediente_existe(nome_ingrediente):
-            ingrediente = Ingredientes(nome_ingrediente, int(quantidade_ingrediente))
+            ingrediente = Ingredientes(nome_ingrediente, float(quantidade_ingrediente))
             lista_ingredientes.append(ingrediente)
         else:
             tk.messagebox.showwarning("Aviso", f"O ingrediente '{nome_ingrediente}' já está na lista.")
+    mostrar_ingredientes()
 
 
 
@@ -59,18 +60,19 @@ def modificar_ingrediente():
     
     mostrar_ingredientes()
 
-def mostrar_ingredientes():
-    resultado.config(text="Ingredientes:")
-    for ingrediente in lista_ingredientes:
-        resultado.config(text=resultado.cget("text") + f"\n{ingrediente}")
-
 def salvar_ingredientes():
     salvar_ingredientes_csv(lista_ingredientes)
 
-def carregar_ingredientes():
-    lista_ingredientes_carregados = carregar_ingredientes_csv()
-    lista_ingredientes.extend(lista_ingredientes_carregados)
-    mostrar_ingredientes()
+def mostrar_ingredientes():
+    resultado.delete(1.0, "end")  # Limpa o conteúdo atual do widget Text
+
+    resultado.insert("1.0", "Ingredientes:\n")
+
+    #lista_ingredientes_carregados = carregar_ingredientes_csv()
+    #uniao_sinistra = set(lista_ingredientes).union(lista_ingredientes_carregados)
+    #lista_ingredientes.extend(lista_ingredientes_carregados)
+    for ingrediente in lista_ingredientes:
+        resultado.insert("end", f"\n{ingrediente}")
 
 def salvar_ingredientes_csv(ingredientes):
     with open('ingredientes.csv', 'w', newline='') as arquivo_csv:
@@ -92,6 +94,8 @@ def carregar_ingredientes_csv():
 
 # Lista para armazenar os ingredientes
 lista_ingredientes = []
+lista_ingredientes_carregados = carregar_ingredientes_csv()
+lista_ingredientes.extend(lista_ingredientes_carregados)
 
 # Cria a janela principal
 janela = tk.Tk()
@@ -101,15 +105,6 @@ janela.title("Gestão de Ingredientes")
 largura = 600
 altura = 600
 janela.geometry(f"{largura}x{altura}")
-
-# Adiciona entradas de texto e botões à janela
-#tk.Label(janela, text="Nome do Ingrediente:").pack()
-##entrada_nome = tk.Entry(janela)
-#entrada_nome.pack()
-
-##tk.Label(janela, text="Quantidade do Ingrediente:").pack()
-#entrada_quantidade = tk.Entry(janela)
-#entrada_quantidade.pack()
 
 botao_adicionar = tk.Button(janela, text="Adicionar Ingrediente", command=adicionar_ingrediente)
 botao_adicionar.pack()
@@ -126,10 +121,10 @@ botao_mostrar.pack()
 botao_salvar = tk.Button(janela, text="Salvar Ingredientes", command=salvar_ingredientes)
 botao_salvar.pack()
 
-botao_carregar = tk.Button(janela, text="Carregar Ingredientes", command=carregar_ingredientes)
-botao_carregar.pack()
+#botao_carregar = tk.Button(janela, text="Carregar Ingredientes", command=mostrar_ingredientes)
+#botao_carregar.pack()
 
-resultado = tk.Label(janela, text="")
+resultado = Text(janela, height=10, width=40)
 resultado.pack()
 
 # Inicia o loop principal da interface gráfica
