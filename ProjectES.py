@@ -4,19 +4,20 @@ from tkinter import simpledialog
 import csv
 
 class Ingredientes:
-    def __init__(self, nome, quantidade):
+    def __init__(self, nome, quantidade, preco):
         self.nome = nome
         self.quantidade = quantidade
+        self.preco = preco
 
     def __str__(self):
-        return f"{self.quantidade} unidades de {self.nome}"
+        return f"{self.nome} preço: R$ {(self.preco):.2f}, por {self.quantidade} g / ml"
 
     def to_csv(self):
-        return [self.nome, str(self.quantidade)]
+        return [self.nome, float(self.quantidade), float(self.preco)]
 
     @classmethod
     def from_csv(cls, dados):
-        return cls(dados[0], float(dados[1]))
+        return cls(dados[0], float(dados[1]), float(dados[2]))
 
 def ingrediente_existe(nome_ingrediente):
     for ingrediente in lista_ingredientes:
@@ -27,11 +28,12 @@ def ingrediente_existe(nome_ingrediente):
 def adicionar_ingrediente():
     nome_ingrediente = simpledialog.askstring("Adicionar ingrediente", "Digite o nome do ingrediente a ser adicionado:")
     quantidade_ingrediente = simpledialog.askfloat("Quantidade do ingrediente", "Digite a quantidade ou peso a ser utilizado:")
+    preco_ingrediente = simpledialog.askfloat("Valor do produto", "Digite o valor que foi pago pelo produto:")
 
-    if nome_ingrediente and quantidade_ingrediente:
+    if nome_ingrediente and quantidade_ingrediente and preco_ingrediente:
         # Verifica se o ingrediente já está na lista
         if not ingrediente_existe(nome_ingrediente):
-            ingrediente = Ingredientes(nome_ingrediente, float(quantidade_ingrediente))
+            ingrediente = Ingredientes(nome_ingrediente, float(quantidade_ingrediente), float(preco_ingrediente))
             lista_ingredientes.append(ingrediente)
         else:
             tk.messagebox.showwarning("Aviso", f"O ingrediente '{nome_ingrediente}' já está na lista.")
@@ -54,8 +56,8 @@ def modificar_ingrediente():
     
     for ingrediente in lista_ingredientes:
         if ingrediente.nome.lower() == nome_ingrediente.lower():
-            nova_quantidade = simpledialog.askfloat("Modificar Ingrediente", f"Digite a nova quantidade para {ingrediente.nome}:")
-            ingrediente.quantidade = nova_quantidade if nova_quantidade is not None else ingrediente.quantidade
+            novo_preco = simpledialog.askfloat("Modificar Ingrediente", f"Digite a novo preco para {ingrediente.nome}:")
+            ingrediente.preco = novo_preco if novo_preco is not None else ingrediente.preco
             break
     
     mostrar_ingredientes()
@@ -68,9 +70,6 @@ def mostrar_ingredientes():
 
     resultado.insert("1.0", "Ingredientes:\n")
 
-    #lista_ingredientes_carregados = carregar_ingredientes_csv()
-    #uniao_sinistra = set(lista_ingredientes).union(lista_ingredientes_carregados)
-    #lista_ingredientes.extend(lista_ingredientes_carregados)
     for ingrediente in lista_ingredientes:
         resultado.insert("end", f"\n{ingrediente}")
 
@@ -120,9 +119,6 @@ botao_mostrar.pack()
 
 botao_salvar = tk.Button(janela, text="Salvar Ingredientes", command=salvar_ingredientes)
 botao_salvar.pack()
-
-#botao_carregar = tk.Button(janela, text="Carregar Ingredientes", command=mostrar_ingredientes)
-#botao_carregar.pack()
 
 resultado = Text(janela, height=10, width=40)
 resultado.pack()
